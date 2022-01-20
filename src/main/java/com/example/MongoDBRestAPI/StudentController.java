@@ -1,6 +1,7 @@
 package com.example.MongoDBRestAPI;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -9,13 +10,16 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
-import java.util.Optional;
 
+@Service
 @RestController
 public class StudentController {
 
     @Autowired
     public StudentRepo repo;
+
+    @Autowired
+    private SequenceGeneratorService sequenceGeneratorService;
 
     @GetMapping(value = "/students")
     public List<Student> getAllStudents() {
@@ -23,20 +27,33 @@ public class StudentController {
     }
 
     @GetMapping(value = "/student/{id}")
-    public Optional<Student> getStudent(@PathVariable long id) {
-        return repo.findById(id);
+    public String getStudent(@PathVariable long id) {
+        Student std = repo.getStudentByID(id).orElse(new Student());
+        if (std.getName() == null) {
+            return "Given ID is not present in Database";
+        } else {
+            return std.toString();
+        }
     }
 
     @PostMapping(value = "/create")
     public String createStudent(@RequestBody Student studnet) {
-        Student inserted = repo.insert(studnet);
-        return "Student created " + inserted.getName();
+        studnet.setId(sequenceGeneratorService.generateSequence(Student.SEQUENCE_NAME));
+        Student st = repo.insert(studnet);
+        return "Student created " + st.getName();
     }
 
     @DeleteMapping(value = "/student/{id}")
     public String delStudnet(@PathVariable long id) {
-        repo.deleteById(id);
-        return "Deleted Successfully";
+
+        Student isExists = repo.getStudentByID(id).orElse(new Student());
+        System.out.println(isExists);
+        if (isExists.getName() == null) {
+            return "Given ID is not present in Database";
+        } else {
+            repo.deleteById(id);
+            return "Deleted Successfully";
+        }
     }
 
     @PutMapping(value = "/update")

@@ -1,9 +1,12 @@
 package com.example.MongoDBRestAPI;
 
-import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.stereotype.Repository;
+import java.util.Optional;
 
-@Repository
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
+
 public interface StudentRepo extends MongoRepository<Student, Long> {
 
+    @Query("{id :?0}")
+    Optional<Student> getStudentByID(long id);
 }
