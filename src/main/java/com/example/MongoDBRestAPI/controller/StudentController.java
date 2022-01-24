@@ -2,6 +2,8 @@ package com.example.MongoDBRestAPI.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mapping.MappingException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,6 +13,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
+
+import com.example.MongoDBRestAPI.exception_handling.StudentAgeException;
+import com.example.MongoDBRestAPI.exception_handling.StudentNameCantBeNullException;
 import com.example.MongoDBRestAPI.model.Student;
 import com.example.MongoDBRestAPI.repository.StudentRepo;
 import com.example.MongoDBRestAPI.service.impl.SequenceGeneratorService;
@@ -41,21 +46,16 @@ public class StudentController {
     }
 
     @PostMapping(value = "/create")
-    public String createStudent(@RequestBody Student student) {
-        try {
-            if (student.getName() == null || student.getName().length() == 0 || student.getName().isEmpty()) {
-                throw new Exception("Name can't be null");
-            }
-            if (student.getAge() == 0) {
-                throw new Exception("Age Can't be 0");
-            }
+    public ResponseEntity<Object> createStudent(@RequestBody Student student) {
+        if (student.getName() == null || student.getName().length() == 0 || student.getName().isEmpty()) {
+            throw new StudentNameCantBeNullException();
+        } else if (student.getAge() == 0) {
+            throw new StudentAgeException();
+        } else {
             student.setId(sequenceGeneratorService.generateSequence(Student.SEQUENCE_NAME));
             repo.save(student);
-            return "Student created " + student.getName();
-        } catch (Exception exp) {
-            return exp.getMessage();
+            return new ResponseEntity<>("Student added succesfully", HttpStatus.OK);
         }
-
     }
 
     @DeleteMapping(value = "/student/{id}")
@@ -72,18 +72,14 @@ public class StudentController {
     }
 
     @PutMapping(value = "/update")
-    public String upStudent(@RequestBody Student student) {
-        try {
-            if (student.getName() == null || student.getName().length() == 0 || student.getName().isEmpty()) {
-                throw new Exception("Name can't be null");
-            }
-            if (student.getAge() == 0) {
-                throw new Exception("Age Can't be 0");
-            }
+    public ResponseEntity<Object> upStudent(@RequestBody Student student) {
+        if (student.getName() == null || student.getName().length() == 0 || student.getName().isEmpty()) {
+            throw new StudentNameCantBeNullException();
+        } else if (student.getAge() == 0) {
+            throw new StudentAgeException();
+        } else {
             repo.save(student);
-            return "Updated Succesfully!";
-        } catch (Exception exp) {
-            return exp.getMessage();
+            return new ResponseEntity<>("Student Updated succesfully", HttpStatus.OK);
         }
     }
 }
