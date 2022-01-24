@@ -1,6 +1,8 @@
-package com.example.MongoDBRestAPI;
+package com.example.MongoDBRestAPI.repository;
 
 import java.util.Optional;
+
+import com.example.MongoDBRestAPI.model.Student;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
