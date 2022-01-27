@@ -11,4 +11,13 @@ public interface StudentRepo extends MongoRepository<Student, Long> {
 
     @Query("{id :?0}")
     Optional<Student> getStudentByID(long id);
+
+    default String loadStudents(long id) {
+        Student std = getStudentByID(id).orElse(new Student());
+        if (std.getName() == null) {
+            return "Given ID is not present in Database";
+        } else {
+            return std.toString();
+        }
+    }
 }
