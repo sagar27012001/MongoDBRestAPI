@@ -27,7 +27,7 @@ public class StudentController {
     }
 
     @GetMapping(value = "/student/{id}")
-    public String getStudent(@PathVariable String id) {
+    public ResponseEntity<Object> getStudent(@PathVariable String id) {
         return service.getStudent(id);
     }
 
@@ -37,7 +37,7 @@ public class StudentController {
     }
 
     @DeleteMapping(value = "/student/{id}")
-    public String delStudent(@PathVariable String id) {
+    public ResponseEntity<Object> delStudent(@PathVariable String id) {
         return service.delStudent(id);
     }
 

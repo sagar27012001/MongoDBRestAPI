@@ -19,12 +19,12 @@ public class StudentServiceImpl implements StudentService {
     public StudentRepo repo;
 
     @Override
-    public String getStudent(String id) {
+    public ResponseEntity<Object> getStudent(String id) {
         Student std = repo.getStudentByID(id).orElse(new Student());
         if (std.getName() == null) {
-            return "Given ID is not present in Database";
+            return new ResponseEntity<>("Student not found", HttpStatus.NOT_FOUND);
         } else {
-            return std.toString();
+            return new ResponseEntity<>(std, HttpStatus.OK);
         }
     }
 
@@ -41,20 +41,19 @@ public class StudentServiceImpl implements StudentService {
             throw new StudentAgeException();
         } else {
             repo.save(student);
-            return new ResponseEntity<>("Student added succesfully\n" + student.toString(), HttpStatus.OK);
+            return new ResponseEntity<>(student, HttpStatus.OK);
         }
     }
 
     @Override
-    public String delStudent(String id) {
-
+    public ResponseEntity<Object> delStudent(String id) {
         Student isExists = repo.getStudentByID(id).orElse(new Student());
         if (isExists.getName() == null) {
-            return "Given ID is not present in Database";
+            return new ResponseEntity<>("Given ID is not present in Database", HttpStatus.NOT_FOUND);
         } else {
             Student student = repo.getStudentByID(id).orElse(new Student());
             repo.deleteById(id);
-            return "Deleted Successfully\n" + student.toString();
+            return new ResponseEntity<>(student, HttpStatus.OK);
         }
     }
 
@@ -64,11 +63,11 @@ public class StudentServiceImpl implements StudentService {
             throw new StudentNameCantBeNullException();
         } else if (student.getAge() == 0) {
             throw new StudentAgeException();
-        } else if (student.getStudentByID(student.getId()) == null) {
+        } else if (repo.getStudentByID(student.getId()).isPresent() == false) {
             return new ResponseEntity<>("Given ID is not present in Database", HttpStatus.NOT_FOUND);
         } else {
             repo.save(student);
-            return new ResponseEntity<>("Student Updated succesfully\n" + student.toString(), HttpStatus.OK);
+            return new ResponseEntity<>(student, HttpStatus.OK);
         }
     }
 }
