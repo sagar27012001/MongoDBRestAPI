@@ -1,5 +1,7 @@
 package com.example.MongoDBRestAPI.model;
 
+import java.util.Optional;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -22,4 +24,8 @@ public class Student {
     private String name;
     private double age;
     private int grade;
+
+    public Optional<Student> getStudentByID(String id2) {
+        return null;
+    }
 }
