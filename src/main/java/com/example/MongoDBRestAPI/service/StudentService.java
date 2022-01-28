@@ -7,13 +7,13 @@ import com.example.MongoDBRestAPI.model.Student;
 import org.springframework.http.ResponseEntity;
 
 public interface StudentService {
-    String getStudent(long id);
+    String getStudent(String id);
 
     List<Student> getAllStudents();
 
     ResponseEntity<Object> createStudent(Student student);
 
-    String delStudent(long id);
+    String delStudent(String id);
 
     ResponseEntity<Object> upStudent(Student student);
 }

@@ -16,11 +16,10 @@ import lombok.ToString;
 @AllArgsConstructor
 @Document(collection = "studnet")
 public class Student {
-    public static final String SEQUENCE_NAME = "users_sequence";
+    // public static final String SEQUENCE_NAME = "users_sequence";
     @Id
-    private long id;
+    private String id;
     private String name;
     private double age;
     private int grade;
-
 }
